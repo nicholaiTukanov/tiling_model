@@ -21,24 +21,34 @@ declare -a NC_ARR=(2048 3072 4096)
 # jagged-ness for square sizes happens at about 2000
 #declare -a frac_arr=(0.875 1 1.5 1.75 2)
 declare -a frac_kc_arr=(1 1.25 1.5 1.75 2 2.25 2.5 2.75)
-declare -a frac_mc_arr=(0.25 0.5 0.75 1 1.25 1.5 1.75 2)
-declare -a frac_nc_arr=(0.25 0.5 0.75 1 1.25 1.5 1.75 2)
+declare -a frac_mc_arr=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8)
+declare -a frac_nc_arr=(0.7 0.75 0.8 0.85 0.9 0.95 1 1.05)
 dt_size=2
 l1_s=$((32*(2**10)))
 l2_s=$((2*(2**20)))
 l3_s=$((8*(2**20)))
+len=${!frac_kc_arr[@]}
 for i in "${!frac_kc_arr[@]}"
 do
-
+for j in {1..3}
+do
+    j=$(($j-2))
+    idx=$(($i+$j))
+    if [ $idx -gt 8 ]; then
+        continue
+    elif [ $idx -lt 0 ]; then
+        continue
+    fi
     kc=$( bc <<< "($l1_s*${frac_kc_arr[$i]})/($nr*$dt_size)")
-    mc=$( bc <<< "($l2_s*${frac_mc_arr[$i]})/($kc*$dt_size)")
-    nc=$( bc <<< "($l3_s*${frac_nc_arr[$i]})/($kc*$dt_size)")
+    mc=$( bc <<< "($l2_s*${frac_mc_arr[$idx]})/($kc*$dt_size)")
+    nc=$( bc <<< "($l3_s*${frac_nc_arr[$idx]})/($kc*$dt_size)")
     mc=$((mc - mc%mr))
     nc=$((nc - nc%nr))
     
     make clean;
     make MACROS="-DMC=$mc -DKC=$kc -DNC=$nc"
     ./test_blocks.x > ./results/${mc}_${kc}_${nc}_fp16gemm    
+done
 done
 
 : <<'END'

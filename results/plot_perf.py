@@ -1,3 +1,4 @@
+from matplotlib.lines import Line2D
 import matplotlib.pyplot as pyplot
 import matplotlib.cm as mplcm
 import matplotlib.colors as colors
@@ -74,9 +75,12 @@ def main():
     fig = pyplot.figure(figsize=(24, 13.5), dpi=80)
     ax = fig.add_subplot(1,1,1)
     cm = pyplot.get_cmap('gist_rainbow')
+    all_markers = list(Line2D.markers.keys())
+    legal_markers = [all_markers[i % 25] for i in range(NUM_COLORS)]
     cNorm  = colors.Normalize(vmin=0, vmax=NUM_COLORS-1)
     scalarMap = mplcm.ScalarMappable(norm=cNorm, cmap=cm)
-    ax.set_prop_cycle(color=[scalarMap.to_rgba(i) for i in range(NUM_COLORS)])
+    ax.set_prop_cycle(color=[scalarMap.to_rgba(i) for i in range(NUM_COLORS)], 
+            marker=legal_markers)
 
 
     for f in perf_files:

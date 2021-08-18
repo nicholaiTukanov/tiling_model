@@ -145,8 +145,8 @@ void get_perf(int kernel_id, int nreps, int start, int end, int inc)
     for (int p=start; p<=end; p+=inc)
     {
         // change here to adjust problem size
-        m = MC*6,
-        n = NC*2,
+        m = p, 
+        n = p,
         k = p;
 
         double best_run_time = run_kernel(kernel_id, nreps, m, n, k);
