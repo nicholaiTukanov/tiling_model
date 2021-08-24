@@ -1,0 +1,69 @@
+
+
+Assume a section of code where 
+1) there are NO dependencies
+2) the same instruction does all the computation
+3) model L/S architecture
+
+If this assumption holds, then the minimum # of cycles must equal (n/t) + l
+where n = number of compute instructions, t = throughput of instruction, l = latency of instruction.
+
+Proof:
+
+----------------------------------------------------------------------------------------------------
+
+Let C1 to Cn be all the compute instruction that happen within a section of code
+
+In the best case, all these instructions will follow one another
+
+Psuedocode:
+
+C1
+C2
+C3
+...
+Cn
+
+On our model architecture, it takes 1 cycle to issue t instructions
+
+Since we have n instructions, then it will take (n/t) cycles to issue all the instructions
+
+Due to pipelining, as new instructions are being issued, the previous instruction continues in its process.
+Therefore, after l + 1 instructions have been issued, the one in question just finished.
+
+Cit is the i_th set of instructions that can be executed in parallel
+
+C1t  | F D E M W 
+C2t  |   F D E M W 
+C3t  |     F D E M W 
+C4t  |       F D E M W
+.
+.
+. 
+Cnt  |                   F D E M W 
+
+from stage F to W, each Ci takes l instructions (latency)
+
+Thus from the image above, we can see that it takes n cycles to issue each instruction group
+After all the instructions have been issued, we have to wait on the last one to complete which takes
+l cycles.
+
+Therefore, the total cycles to compute on the data is 
+
+(n/t) + l
+
+----------------------------------------------------------------------------------------------------
+
+
+
+Lets consider a section of code in which we need to load the data to do the computation.
+
+Lets consider a scenario on our model architecture in which we load everything up front
+
+Total cycles to load all the data (assume each load goes into unique register)
+
+L = set of all load instructions (view as vector)
+l = set of all latencies for load instruction
+
+
+total cycles  = len(L) / t + max(l)
